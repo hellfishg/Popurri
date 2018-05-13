@@ -1,0 +1,663 @@
+#make_COM#    ; create ".com" executable (DOS 1.0 compatible).
+org  100h    ; add +100h to all addresses (required for .com file).
+
+TITLE TP DE SPD: POPURRI (TPPopurri.asm)
+
+; Descripcion del programa:
+;    TP Popurri 2016 SPD
+; Autore:
+;     German Asprino
+; Fecha de creación:
+;     12/06/2016
+; Fecha de ultima modificación:
+;    29/06/2016
+
+INCLUDE 'emu8086.inc'
+DEFINE_SCAN_NUM
+;DEFINE_PRINT_STRING
+DEFINE_PRINT_NUM
+DEFINE_PRINT_NUM_UNS    ;Definir si se usa PRINT_NUM
+DEFINE_PTHIS
+;DEFINE_GET_STRING
+DEFINE_CLEAR_SCREEN
+
+.DATA
+;VARIABLES DE MARQUESINAS:
+
+bienvenida DB    '  |------------------------------------------|'
+DB 13,10,    '  |------------------------------------------|'
+DB 13,10,    '  |                                          |'
+DB 13,10,     '  |    Sistemas de Procesamiento de Datos    |'
+DB 13,10,    '  |              TP: Popurri                 |'
+DB 13,10,    '  |                                          |'
+DB 13,10,    '  |    Alumno:                              |'
+DB 13,10,    '  |           German Asprino                 |'
+DB 13,10,    '  |                                          |'
+DB 13,10,    '  |------------------------------------------|'
+DB 13,10,    '  |------------------------------------------|'
+DB 13,10,    '        >>OPRIMA ENTER PARA CONTINUAR<<       ','$'
+
+enter DB 13,10,10,10,'      >>OPRIMA ENTER PARA CONTINUAR<<       ',10,13,'$'
+
+punto1a DB 13,10,' A) INGRESO DE 10 NUMEROS EN UN ARRAY, ENTRE -32767 a 32767',10,13,'$'
+
+punto2a DB 13,10,' B) INGRESO DE 2 DIVIDENDOS Y UN DIVISOR' ,10,13,'$'
+
+punto3a DB 13,10,' C) DIVISION CON RESTO Y CONCIENTE',10,13,'$'
+
+punto4a DB 13,10,' D) MULTIPLICA LOS RESTOS Y LOS COCIENTES',10,13,'$'
+
+punto5a DB 13,10,' E) SUMA LOS RESULTADOS Y COMPARA CON EL VECTOR',10,13,'$'
+
+punto6a DB 13,10,' F) Si el resto de una de las divisiones es cero,se deberá remplazar'
+DB 13,10,        '    por una resta del numero divisor (el tercero ingresado)'
+DB 13,10,        '    y el cociente utilizando complemento a 2.'
+DB 13,10,        '    Este número hallado reemplazará el cociente que dio resto 0,'
+DB 13,10,        '    Salvo que el divisor sea menor al cociente.en ese caso se deja igual','$'
+
+tabla_c DB 13,10,'|Dividendo | Divisor | Cociente | Resto|'
+DB 13,10,'|----------|---------|----------|------|'
+DB 13,10,' ','$'
+
+
+;VARIABLES DE USO:
+
+array DW ?    ;Doble Word para poder ingresar num. en 16Bits.
+divisor DW ?
+cociente1 DW ?
+cociente2 DW ?
+resto1 DW ?
+resto2 DW ?
+resu1 DW ?
+resu2 DW ?
+resufinal DW ?
+
+;VARIABLES DE TESTEO:
+
+;    array DW -20000,23425,345,12345,23,765,2,1234,9876,10
+;
+;    divisor DW 3
+;    cociente1 DW 2
+;    cociente2 DW 4
+;    resto1 DW 1
+;    resto2 DW 3
+;    resu1 DW 1000
+;    resu2 DW 239
+
+.CODE
+
+main PROC
+
+
+;<<<<<<<<<<<<<<<( PUNTO A )>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+;Maximo numero a ingresar es 32767. el maximo en 16 es 65535, pero tiene que representar los negativos
+;Del -32767 a 32767.
+
+
+;Mensaje de bienvenida:
+MOV ah,9H
+MOV DX,OFFSET bienvenida
+INT 21H        ;Int. de D.O.S.
+
+MOV AH,00h    ;Parametro de pausa con enter
+INT 16H        ;Int. de control de teclado
+
+CALL CLEAR_SCREEN  ;Limpia pantalla
+
+MOV ah,9H
+MOV DX,OFFSET punto1a    ;Lee la cadena hasta el '$'
+INT 21H
+
+LEA SI,array    ;pasa la direccion del array a SI.
+MOV CX,10    ;pone el contador del bucle en 10.
+CALL guardarArray
+
+CALL PTHIS    ;Imprime el los siguiente, con final. ,0
+DB 13,10,'------------------------------------------',10,13,0
+
+CALL CLEAR_SCREEN
+
+LEA SI,array
+MOV CX,9
+CALL imprimirTabla
+
+
+MOV AH,9H
+MOV DX,OFFSET enter
+INT 21H
+
+MOV AH,00h    ;Parametro de pausa con enter
+INT 16H        ;Int de control de teclado
+CALL CLEAR_SCREEN
+CALL limpRegistros    ;Limpia registros y banderas.
+
+;<<<<<<<<<<<<<<<( PUNTO B )>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+MOV AH,9H
+MOV DX,OFFSET punto2a
+INT 21H
+
+;Guarda los valores
+
+CALL PTHIS
+DB 13,10,10,'Ingrese el PRIMER dividendo: ',0
+
+CALL SCAN_NUM    ;Escanea numeros en el buffer termina con enter.
+;Regrasa el numero en CX.
+PUSH CX        ;Manda CX a la pila.
+
+CALL PTHIS
+DB 13,10,10,'Ingrese el SEGUNDO dividendo: ',0
+
+CALL SCAN_NUM
+
+PUSH CX        ;Regresa el valor del tope de la pila en CX.
+
+CALL PTHIS
+
+DB 13,10,10,'Ingrese el DIVISOR: ',0
+CALL SCAN_NUM
+MOV divisor,CX
+
+MOV AH,9H
+MOV DX,OFFSET enter
+INT 21H
+
+MOV AH,00h
+INT 16H
+CALL CLEAR_SCREEN
+CALL limpRegistros
+
+;<<<<<<<<<<<<<<<( PUNTO C )>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+MOV AH,9H
+MOV DX,OFFSET punto3a
+INT 21H
+
+XOR DX,DX    ;Importante limpiar en la div de WORD.
+
+POP BX        ;Esto saca de la pila el seg. dividendo.
+POP AX        ;Esto saca de la pila el primer dividendo.
+
+PUSH BX        ;Meto el segundo dividendo en pila.
+PUSH AX        ;Meto el primer dividendo en pila.
+
+MOV CX,divisor
+
+DIV CX
+MOV cociente1,AX
+MOV resto1,DX
+
+XOR DX,DX
+
+MOV AX,BX
+DIV CX
+MOV cociente2,AX
+MOV resto2,DX
+
+;Imprimir la tabla:
+POP AX
+POP BX
+
+CALL tablac
+
+MOV AH,00h
+INT 16H
+CALL CLEAR_SCREEN
+CALL limpRegistros
+
+;<<<<<<<<<<<<<<<( PUNTO F )>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+;INTERPRETACION DEL ENUNCIADO:
+;Si el cociente es mayor al divisor, no da el complemento 2, da un absurdo.
+;Dado que no se nos explico como restar complemento 2 con un sustraendo mayor al minuendo.
+;Asi que si el cociente es mayor al divisor, se saltea el punto F) en el numero que corresponde:
+
+MOV AH,9H
+MOV DX,OFFSET punto6a
+INT 21H
+
+MOV AH,9H
+MOV DX,OFFSET enter
+INT 21H
+
+MOV AH,00h
+INT 16H
+CALL CLEAR_SCREEN
+CALL limpRegistros
+
+MOV AX,resto1
+MOV BX,resto2
+MOV CX,divisor
+
+
+CMP AX,0        ;Compara cociente1 con 0.
+JNZ IGUAL1            ;Si cociente no es igual a 0, salta
+MOV AX,cociente1
+CMP CX,AX        ;compara divisor-cociente1.
+JS IGUAL1            ;Si flag S (es negativo) no realiza el complemento2.Explicacion linea 214.
+
+NEG AX            ;Invierte y suma 1, complemento 2.
+ADD AX,CX        ;Suma el divisor+el cociente1.
+MOV cociente1,AX    ;Remplaza el resultado.
+IGUAL1:
+
+CMP BX,0
+JNZ IGUAL2
+MOV BX,cociente2
+CMP CX,BX        ;compara divisor-cociente2.
+JS IGUAL2            ;Si flag S (es negativo) no realiza el complemento2.Explicacion linea 214.
+
+NEG BX            ;Invierte y suma 1, complemento 2.
+ADD BX,CX        ;Suma el divisor+el cociente1.
+MOV cociente2,BX    ;Remplaza el resultado.
+IGUAL2:
+
+CALL limpRegistros
+
+;<<<<<<<<<<<<<<<( PUNTO D )>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+MOV AH,9H
+MOV DX,OFFSET punto4a
+INT 21H
+
+MOV AX,cociente1
+MOV BX,cociente2
+MUL BX
+MOV resu1,AX
+
+MOV AX,resto1
+MOV BX,resto2
+MUL BX
+MOV resu2,AX
+
+;Imprimir tablas
+CALL tablad
+
+MOV AH,00h
+INT 16H
+CALL CLEAR_SCREEN
+CALL limpRegistros
+
+;<<<<<<<<<<<<<<<( PUNTO E )>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+MOV CX,9
+LEA SI,array
+
+CALL imprimirTabla
+
+CALL tablae
+
+CALL limpRegistros
+
+;Comparacion con la tabla y resultado final:
+
+MOV AX,resufinal    ;Divide resufinal por 10, el resto es la unidad.
+MOV BX,10
+DIV BX
+MOV resufinal,DX    ;Resto guardado en DX.
+
+LEA SI,array        ;Direccion del array en SI.
+ADD SI,resufinal
+ADD SI,resufinal    ;Necesario para el indice en WORD.
+
+MOV CX,[SI]
+
+MOV DL,30        ;Parametros de salto en la pantalla.
+MOV DH,15
+XOR BX,BX        ;Parametro en 0.
+MOV AH,2
+INT 10H            ;Salto en la posicion fila=15,colum=30
+
+MOV AX,CX
+
+CALL PRINT_NUM
+
+MOV AH,00h
+INT 16H
+CALL CLEAR_SCREEN
+
+CALL PTHIS
+DB 13,10,10,10,10,10,10,10,10,10,10,10,'                  Apaga el ordenador y vete a la cama!',0
+
+;LA PILA TIENE QUE ESTAR SIN VALORES PARA PODER TERMINAR EL PROGRAMA.
+RET
+main ENDP
+;--------------------------------------------------------------------
+;FUNCIONES:
+;--------------------------------------------------------------------
+guardarArray PROC
+;FUNCION:Ingresa el Array
+;PARAMETROS: la direccion del array en SI. Contador del array en CX.
+
+ARRAY_IN:
+
+CALL PTHIS    ;Imprime las lineas siguentes.
+DB 13,10,'Numero ',0
+
+MOV AL,58    ;Agrega 58 base para trasformar en ASCII
+SUB AL,CL    ;Resta el contador para formar el numero ASCII.
+MOV AH,0EH    ;parametro de caracter
+INT 10H        ;imprime caracter de AL.
+
+CALL PTHIS
+DB ': ',0
+
+PUSH CX        ;guarda CX en la pila, ya que lo usa la funcion scan_num
+CALL SCAN_NUM    ;scan_num toma el dato con eco por pantalla de mas de un caracter y lo guarda en CX.
+MOV [SI],CX    ;guarda el dato en la direccion de memoria pasada en SI.
+ADD SI,2    ;suma la posision de memoria, como el indice del array,OJO se suma 2 por que salta en DB.
+POP CX        ;saca de la pila guarda en CX el contador del for.
+
+LOOP ARRAY_IN        ;Salto del FOR, usa CX y lo decrementa en 1 cada salto.
+RET
+guardarArray ENDP
+;--------------------------------------------------------------------
+imprimirTabla PROC
+;FUNCION:Imprime el Array en una tabla con sus posiciones.
+;PARAMETROS: la direccion del array en SI. Contador del array en CX.
+
+CALL PTHIS
+DB ' ',0
+
+MOV AX,[SI]    ;Mueve el dato de la posicion de registro a AX. AX es DB.
+CALL PRINT_NUM    ;Imprime el dato como DECimal pasado en AX.
+
+
+IMP_ARRAY:
+
+PUSH CX
+
+
+ADD DL,8    ;Salto cada +8 de columna columna.
+MOV DH,0    ;Salto fila
+MOV Ah,2    ;parametro.
+INT 10h        ;Instruccion para saltar de posicion en pantalla.
+CALL PTHIS
+DB '| ',0
+
+ADD SI,2    ;Incrementa en 2 por que es un doble word.
+MOV AX,[SI]    ;Mueve el dato de la posicion de registro a AX. AX es DB.
+CALL PRINT_NUM    ;Imprime el dato como DECimal pasado en AX.
+
+
+PUSH DX
+
+SUB DL,8
+MOV DH,1
+MOV AH,2
+INT 10H
+CALL PTHIS
+DB ' -------',0
+
+PUSH AX
+
+ADD DL,4
+MOV DH,2
+INT 10H
+MOV AL,57    ;Agrega 57 para trasformar en ASCII
+SUB AL,CL    ;Resta el contador
+MOV AH,0EH
+INT 10H
+CALL PTHIS
+DB '   |',0
+
+POP AX
+POP DX
+POP CX
+LOOP    IMP_ARRAY    ;Salto de FOR.
+
+
+MOV DH,1
+MOV AH,2
+INT 10H
+CALL PTHIS
+DB ' ------|',0
+
+ADD DL,4
+MOV DH,2
+INT 10H
+MOV AL,57
+SUB AL,CL
+MOV AH,0EH
+INT 10H
+RET
+imprimirTabla ENDP
+;--------------------------------------------------------------------
+limpRegistros PROC
+;Metodo rapido para limpiar reg. grales. y banderas.
+
+XOR AX,AX    ;Setea los reg X en 0.
+XOR BX,BX
+XOR CX,CX
+XOR DX,DX
+
+PUSH AX        ;Manda 0 a la pila.
+POPF        ;Saca 0 de la pila y lo remplaza en todas las banderas.
+
+XOR SI,SI    ;Pone en 0 el direccionador.
+RET
+limpRegistros ENDP
+;--------------------------------------------------------------------
+tablac PROC
+;FUNCION:Imprime la tabla pedida en el punto C.
+;PARAMETROS:    AX=dividendo 1.
+;        BX=dividendo 2.
+;        var. divisor
+;        var. cociente1 y cociente2
+;        var. resto1 y resto2
+
+PUSH BX
+PUSH AX
+
+MOV AH,9H
+MOV DX,OFFSET tabla_c
+INT 21H
+
+POP AX        ;Saca de la pila el primer div.
+
+CALL PRINT_NUM
+
+MOV DL,15
+MOV DH,5
+MOV AH,2
+INT 10H
+
+MOV AX,divisor
+CALL PRINT_NUM
+
+MOV DL,24
+MOV DH,5
+MOV AH,2
+INT 10H
+
+MOV AX,cociente1
+CALL PRINT_NUM
+
+MOV DL,35
+MOV DH,5
+MOV AH,2
+INT 10H
+
+MOV AX,resto1
+CALL PRINT_NUM
+
+;primera linea fin
+
+CALL PTHIS
+DB 13,10,10,' ',0
+
+POP AX
+
+CALL PRINT_NUM
+
+MOV DL,15
+MOV DH,7
+MOV AH,2
+INT 10H
+
+MOV AX,divisor
+CALL PRINT_NUM
+
+MOV DL,24
+MOV DH,7
+MOV AH,2
+INT 10H
+
+MOV AX,cociente2
+CALL PRINT_NUM
+
+MOV DL,35
+MOV DH,7
+MOV AH,2
+INT 10H
+
+MOV AX,resto2
+CALL PRINT_NUM
+RET
+tablac ENDP
+;--------------------------------------------------------------------
+tablad PROC
+;FUNCION:Imprime la tabla pedida en el punto D.
+;PARAMETROS:    VAR cociente1 Y 2
+;        VAR resto1 y 2
+
+CALL PTHIS
+DB 13,10,10,' Multiplicacion de COCIENTES: ',13,10,10,0
+
+CALL PTHIS
+DB '        ',0
+
+MOV AX,cociente1
+
+CALL PRINT_NUM
+
+CALL PTHIS
+DB ' * ',0
+
+MOV AX,cociente2
+CALL PRINT_NUM
+
+CALL PTHIS
+DB ' = ',0
+
+MOV AX,resu1
+CALL PRINT_NUM
+
+;Imprimir los restos
+
+CALL PTHIS
+DB 13,10,10,' Multiplicacion de RESTOS: ',13,10,10,0
+
+CALL PTHIS
+DB '        ',0
+
+MOV AX,resto1
+
+CALL PRINT_NUM
+
+CALL PTHIS
+DB ' * ',0
+
+MOV AX,resto2
+CALL PRINT_NUM
+
+CALL PTHIS
+DB ' = ',0
+
+MOV AX,resu2
+CALL PRINT_NUM
+RET
+tablad ENDP
+;--------------------------------------------------------------------
+tablae PROC
+;FUNCION:Suma los resultados e imprime la tabla del punto E.
+;PARAMETROS:    VAR resu1 Y 2
+;        VAR resufinal
+
+CALL PTHIS
+DB 13,10,10,0
+
+MOV AH,9H
+MOV DX,OFFSET punto5a
+INT 21H
+
+CALL PTHIS
+DB 13,10,10,0
+
+MOV DL,10
+MOV DH,7
+MOV AH,2
+INT 10H
+
+CALL PTHIS
+DB 'Suma de los resultados:',10,0
+
+MOV DL,17
+MOV DH,9
+MOV AH,2
+INT 10H
+
+MOV AX,resu1
+CALL PRINT_NUM
+
+MOV DL,15
+MOV DH,10
+MOV AH,2
+INT 10H
+
+CALL PTHIS
+DB '+',0
+
+MOV DL,17
+MOV DH,10
+MOV AH,2
+INT 10H
+
+MOV AX,resu2
+CALL PRINT_NUM
+
+MOV DL,14
+MOV DH,11
+MOV AH,2
+INT 10H
+
+CALL PTHIS
+DB '----------',0
+
+MOV DL,17
+MOV DH,12
+MOV AH,2
+INT 10H
+
+MOV AX,resu1
+MOV BX,resu2
+ADD AX,BX
+
+MOV resufinal,AX
+
+CALL PRINT_NUM
+
+MOV DL,1
+MOV DH,15
+XOR BX,BX
+MOV AH,2
+INT 10H
+
+CALL PTHIS
+DB 'EL VALOR QUE CORRESPONDE ES: ',13,0
+RET
+tablae ENDP
+;--------------------------------------------------------------------
+
+;--------------------------------------------------------------------
+
+;--------------------------------------------------------------------
+
+END main
+
+
+
+; [SOURCE]: C:\Users\Usuario\Desktop\popurri\TPPopurri.asm
