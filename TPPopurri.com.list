@@ -1,0 +1,841 @@
+EMU8086 GENERATED LISTING. MACHINE CODE <- SOURCE.
+ 
+TPPopurri.com -- emu8086 assembler version: 4.08  
+ 
+[ 14/07/2016  --  10:25:49 ] 
+ 
+===================================================================================================
+[LINE]     LOC: MACHINE CODE                          SOURCE
+===================================================================================================
+ 
+[   1]        :                                       #make_COM#	; create ".com" executable (DOS 1.0 compatible).
+[   2]        :                                       org  100h	; add +100h to all addresses (required for .com file).
+[   3]        :                                       
+[   4]        :                                       TITLE TP DE SPD: POPURRI (TPPopurri.asm)
+[   5]        :                                       
+[   6]        :                                       ; Descripcion del programa:
+[   7]        :                                       ;	TP Popurri 2016 SPD
+[   8]        :                                       ; Autores:
+[   9]        :                                       ; 	Damian Valles,German Asprino,Mariano Dominguez
+[  10]        :                                       ; Fecha de creación:
+[  11]        :                                       ; 	12/06/2016
+[  12]        :                                       ; Fecha de ultima modificación:
+[  13]        :                                       ;	29/06/2016
+[  14]        :                                       	
+[  15]        :                                       INCLUDE 'emu8086.inc'
+[  16]    0100: E9 C3 00 52 50 56 B9 00 00 2E C6 06   DEFINE_SCAN_NUM
+                C3 01 00 B4 00 CD 16 B4 0E CD 10 3C 
+                2D 74 69 3C 0D 75 03 E9 93 00 3C 08 
+                75 1E BA 00 00 8B C1 2E F7 36 C4 01 
+                8B C8 50 B0 20 B4 0E CD 10 58 50 B0 
+                08 B4 0E CD 10 58 EB CB 3C 30 73 02 
+                EB 04 3C 39 76 1A 50 B0 08 B4 0E CD 
+                10 58 50 B0 20 B4 0E CD 10 58 50 B0 
+                08 B4 0E CD 10 58 EB A7 50 8B C1 2E 
+                F7 26 C4 01 8B C8 58 83 FA 00 75 19 
+                2C 30 B4 00 8B D1 03 C8 72 0A EB 8B 
+                2E C6 06 C3 01 01 EB 83 8B CA BA 00 
+                00 8B C1 2E F7 36 C4 01 8B C8 50 B0 
+                08 B4 0E CD 10 58 50 B0 20 B4 0E CD 
+                10 58 50 B0 08 B4 0E CD 10 58 E9 5A 
+                FF 2E 80 3E C3 01 00 74 02 F7 D9 5E 
+                58 5A C3 00 0A 00                   
+[  17]        :                                       ;DEFINE_PRINT_STRING
+[  18]    01C6: EB 26 52 50 3D 00 00 75 0A 50 B0 30   DEFINE_PRINT_NUM
+                B4 0E CD 10 58 EB 12 3D 00 00 79 0A 
+                F7 D8 50 B0 2D B4 0E CD 10 58 E8 05 
+                00 58 5A C3                         
+[  19]    01EE: EB 50 50 53 51 52 B9 01 00 BB 10 27   DEFINE_PRINT_NUM_UNS	;Definir si se usa PRINT_NUM
+                3D 00 00 74 32 83 FB 00 74 35 83 F9 
+                00 74 04 3B C3 72 14 B9 00 00 BA 00 
+                00 F7 F3 04 30 50 8A C0 B4 0E CD 10 
+                58 8B C2 50 BA 00 00 8B C3 2E F7 36 
+                3E 02 8B D8 58 EB CE 50 B0 30 B4 0E 
+                CD 10 58 5A 59 5B 58 C3 0A 00       
+[  20]    0240: EB 1F 2E 89 36 5F 02 5E 50 2E 8A 04   DEFINE_PTHIS
+                46 3C 00 74 06 B4 0E CD 10 EB F2 58 
+                56 2E 8B 36 5F 02 C3 00 00          
+[  21]        :                                       ;DEFINE_GET_STRING
+[  22]    0261: EB 32 50 1E 53 51 57 B8 40 00 8E D8   DEFINE_CLEAR_SCREEN
+                B4 06 B0 00 B7 07 B5 00 B1 00 BF 84 
+                00 8A 35 BF 4A 00 8A 15 FE CA CD 10 
+                B7 00 B2 00 B6 00 B4 02 CD 10 5F 59 
+                5B 1F 58 C3                         
+[  23]        :                                       
+[  24]    0295: E9 71 05                              .DATA
+[  25]        :                                       ;VARIABLES DE MARQUESINAS:
+[  26]        :                                       
+[  27]    0298: 20 20 7C 2D 2D 2D 2D 2D 2D 2D 2D 2D   	bienvenida DB	'  |------------------------------------------|'
+                2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 
+                2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 
+                2D 2D 2D 2D 2D 2D 2D 2D 2D 7C       
+[  28]    02C6: 0D 0A 20 20 7C 2D 2D 2D 2D 2D 2D 2D   	DB 13,10,	'  |------------------------------------------|'
+                2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 
+                2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 
+                2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 7C 
+                                                    
+[  29]    02F6: 0D 0A 20 20 7C 20 20 20 20 20 20 20   	DB 13,10,	'  |                                          |'
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 7C 
+                                                    
+[  30]    0326: 0D 0A 20 20 7C 20 20 20 20 53 69 73   	DB 13,10, 	'  |    Sistemas de Procesamiento de Datos    |'
+                74 65 6D 61 73 20 64 65 20 50 72 6F 
+                63 65 73 61 6D 69 65 6E 74 6F 20 64 
+                65 20 44 61 74 6F 73 20 20 20 20 7C 
+                                                    
+[  31]    0356: 0D 0A 20 20 7C 20 20 20 20 20 20 20   	DB 13,10,	'  |              TP: Popurri                 |'
+                20 20 20 20 20 20 20 54 50 3A 20 50 
+                6F 70 75 72 72 69 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 7C 
+                                                    
+[  32]    0386: 0D 0A 20 20 7C 20 20 20 20 20 20 20   	DB 13,10,	'  |                                          |'
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 7C 
+                                                    
+[  33]    03B6: 0D 0A 20 20 7C 20 20 20 20 41 6C 75   	DB 13,10,	'  |    Alumnos:                              |'
+                6D 6E 6F 73 3A 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 7C 
+                                                    
+[  34]    03E6: 0D 0A 20 20 7C 20 20 20 20 20 20 20   	DB 13,10,	'  |           Damian Valles                  |'
+                20 20 20 20 44 61 6D 69 61 6E 20 56 
+                61 6C 6C 65 73 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 7C 
+                                                    
+[  35]    0416: 0D 0A 20 20 7C 20 20 20 20 20 20 20   	DB 13,10,	'  |           German Asprino                 |'
+                20 20 20 20 47 65 72 6D 61 6E 20 41 
+                73 70 72 69 6E 6F 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 7C 
+                                                    
+[  36]    0446: 0D 0A 20 20 7C 20 20 20 20 20 20 20   	DB 13,10,       '  |           Mariano Dominguez              |'
+                20 20 20 20 4D 61 72 69 61 6E 6F 20 
+                44 6F 6D 69 6E 67 75 65 7A 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 7C 
+                                                    
+[  37]    0476: 0D 0A 20 20 7C 20 20 20 20 20 20 20   	DB 13,10,	'  |                                          |'
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 7C 
+                                                    
+[  38]    04A6: 0D 0A 20 20 7C 2D 2D 2D 2D 2D 2D 2D   	DB 13,10,	'  |------------------------------------------|'
+                2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 
+                2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 
+                2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 7C 
+                                                    
+[  39]    04D6: 0D 0A 20 20 7C 2D 2D 2D 2D 2D 2D 2D   	DB 13,10,	'  |------------------------------------------|'
+                2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 
+                2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 
+                2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 7C 
+                                                    
+[  40]    0506: 0D 0A 20 20 20 20 20 20 20 20 3E 3E   	DB 13,10,	'        >>OPRIMA ENTER PARA CONTINUAR<<       ','$'
+                4F 50 52 49 4D 41 20 45 4E 54 45 52 
+                20 50 41 52 41 20 43 4F 4E 54 49 4E 
+                55 41 52 3C 3C 20 20 20 20 20 20 20 
+                24                                  
+[  41]        :                                       	
+[  42]    0537: 0D 0A 0A 0A 20 20 20 20 20 20 3E 3E   	enter DB 13,10,10,10,'      >>OPRIMA ENTER PARA CONTINUAR<<       ',10,13,'$'
+                4F 50 52 49 4D 41 20 45 4E 54 45 52 
+                20 50 41 52 41 20 43 4F 4E 54 49 4E 
+                55 41 52 3C 3C 20 20 20 20 20 20 20 
+                0A 0D 24                            
+[  43]        :                                       	
+[  44]    056A: 0D 0A 20 41 29 20 49 4E 47 52 45 53   	punto1a DB 13,10,' A) INGRESO DE 10 NUMEROS EN UN ARRAY, ENTRE -32767 a 32767',10,13,'$'
+                4F 20 44 45 20 31 30 20 4E 55 4D 45 
+                52 4F 53 20 45 4E 20 55 4E 20 41 52 
+                52 41 59 2C 20 45 4E 54 52 45 20 2D 
+                33 32 37 36 37 20 61 20 33 32 37 36 
+                37 0A 0D 24                         
+[  45]        :                                       	
+[  46]    05AA: 0D 0A 20 42 29 20 49 4E 47 52 45 53   	punto2a DB 13,10,' B) INGRESO DE 2 DIVIDENDOS Y UN DIVISOR' ,10,13,'$'
+                4F 20 44 45 20 32 20 44 49 56 49 44 
+                45 4E 44 4F 53 20 59 20 55 4E 20 44 
+                49 56 49 53 4F 52 0A 0D 24          
+[  47]        :                                       	
+[  48]    05D7: 0D 0A 20 43 29 20 44 49 56 49 53 49   	punto3a DB 13,10,' C) DIVISION CON RESTO Y CONCIENTE',10,13,'$'
+                4F 4E 20 43 4F 4E 20 52 45 53 54 4F 
+                20 59 20 43 4F 4E 43 49 45 4E 54 45 
+                0A 0D 24                            
+[  49]        :                                       	
+[  50]    05FE: 0D 0A 20 44 29 20 4D 55 4C 54 49 50   	punto4a DB 13,10,' D) MULTIPLICA LOS RESTOS Y LOS COCIENTES',10,13,'$'
+                4C 49 43 41 20 4C 4F 53 20 52 45 53 
+                54 4F 53 20 59 20 4C 4F 53 20 43 4F 
+                43 49 45 4E 54 45 53 0A 0D 24       
+[  51]        :                                       	
+[  52]    062C: 0D 0A 20 45 29 20 53 55 4D 41 20 4C   	punto5a DB 13,10,' E) SUMA LOS RESULTADOS Y COMPARA CON EL VECTOR',10,13,'$'
+                4F 53 20 52 45 53 55 4C 54 41 44 4F 
+                53 20 59 20 43 4F 4D 50 41 52 41 20 
+                43 4F 4E 20 45 4C 20 56 45 43 54 4F 
+                52 0A 0D 24                         
+[  53]        :                                       	
+[  54]    0660: 0D 0A 20 46 29 20 53 69 20 65 6C 20   	punto6a DB 13,10,' F) Si el resto de una de las divisiones es cero,se deberá remplazar'
+                72 65 73 74 6F 20 64 65 20 75 6E 61 
+                20 64 65 20 6C 61 73 20 64 69 76 69 
+                73 69 6F 6E 65 73 20 65 73 20 63 65 
+                72 6F 2C 73 65 20 64 65 62 65 72 E1 
+                20 72 65 6D 70 6C 61 7A 61 72       
+[  55]    06A6: 0D 0A 20 20 20 20 70 6F 72 20 75 6E   	DB 13,10,        '    por una resta del numero divisor (el tercero ingresado)'
+                61 20 72 65 73 74 61 20 64 65 6C 20 
+                6E 75 6D 65 72 6F 20 64 69 76 69 73 
+                6F 72 20 28 65 6C 20 74 65 72 63 65 
+                72 6F 20 69 6E 67 72 65 73 61 64 6F 
+                29                                  
+[  56]    06E3: 0D 0A 20 20 20 20 79 20 65 6C 20 63   	DB 13,10,        '    y el cociente utilizando complemento a 2.'
+                6F 63 69 65 6E 74 65 20 75 74 69 6C 
+                69 7A 61 6E 64 6F 20 63 6F 6D 70 6C 
+                65 6D 65 6E 74 6F 20 61 20 32 2E    
+[  57]    0712: 0D 0A 20 20 20 20 45 73 74 65 20 6E   	DB 13,10,        '    Este número hallado reemplazará el cociente que dio resto 0,'
+                FA 6D 65 72 6F 20 68 61 6C 6C 61 64 
+                6F 20 72 65 65 6D 70 6C 61 7A 61 72 
+                E1 20 65 6C 20 63 6F 63 69 65 6E 74 
+                65 20 71 75 65 20 64 69 6F 20 72 65 
+                73 74 6F 20 30 2C                   
+[  58]    0754: 0D 0A 20 20 20 20 53 61 6C 76 6F 20   	DB 13,10,        '    Salvo que el divisor sea menor al cociente.en ese caso se deja igual','$'
+                71 75 65 20 65 6C 20 64 69 76 69 73 
+                6F 72 20 73 65 61 20 6D 65 6E 6F 72 
+                20 61 6C 20 63 6F 63 69 65 6E 74 65 
+                2E 65 6E 20 65 73 65 20 63 61 73 6F 
+                20 73 65 20 64 65 6A 61 20 69 67 75 
+                61 6C 24                            
+[  59]        :                                       	
+[  60]    079F: 0D 0A 7C 44 69 76 69 64 65 6E 64 6F   	tabla_c DB 13,10,'|Dividendo | Divisor | Cociente | Resto|'
+                20 7C 20 44 69 76 69 73 6F 72 20 7C 
+                20 43 6F 63 69 65 6E 74 65 20 7C 20 
+                52 65 73 74 6F 7C                   
+[  61]    07C9: 0D 0A 7C 2D 2D 2D 2D 2D 2D 2D 2D 2D   		DB 13,10,'|----------|---------|----------|------|'
+                2D 7C 2D 2D 2D 2D 2D 2D 2D 2D 2D 7C 
+                2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 7C 2D 
+                2D 2D 2D 2D 2D 7C                   
+[  62]    07F3: 0D 0A 20 24                           		DB 13,10,' ','$'
+[  63]        :                                       		
+[  64]        :                                       	
+[  65]        :                                       ;VARIABLES DE USO:
+[  66]        :                                       
+[  67]    07F7: 00 00                                 	array DW ?	;Doble Word para poder ingresar num. en 16Bits.
+[  68]    07F9: 00 00                                 	divisor DW ?
+[  69]    07FB: 00 00                                 	cociente1 DW ?
+[  70]    07FD: 00 00                                 	cociente2 DW ?
+[  71]    07FF: 00 00                                 	resto1 DW ?
+[  72]    0801: 00 00                                 	resto2 DW ?
+[  73]    0803: 00 00                                 	resu1 DW ?
+[  74]    0805: 00 00                                 	resu2 DW ?
+[  75]    0807: 00 00                                 	resufinal DW ?
+[  76]        :                                       
+[  77]        :                                       ;VARIABLES DE TESTEO:
+[  78]        :                                       
+[  79]        :                                       ;	array DW -20000,23425,345,12345,23,765,2,1234,9876,10
+[  80]        :                                       ;
+[  81]        :                                       ;	divisor DW 3
+[  82]        :                                       ;	cociente1 DW 2
+[  83]        :                                       ;	cociente2 DW 4
+[  84]        :                                       ;	resto1 DW 1
+[  85]        :                                       ;	resto2 DW 3
+[  86]        :                                       ;	resu1 DW 1000
+[  87]        :                                       ;	resu2 DW 239
+[  88]        :                                       
+[  89]    0809:                                       .CODE
+[  90]        :                                       
+[  91]    0809:                                       main PROC
+[  92]        :                                       
+[  93]        :                                       
+[  94]        :                                       ;<<<<<<<<<<<<<<<( PUNTO A )>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+[  95]        :                                       
+[  96]        :                                       ;Maximo numero a ingresar es 32767. el maximo en 16 es 65535, pero tiene que representar los negativos
+[  97]        :                                       ;Del -32767 a 32767.
+[  98]        :                                       
+[  99]        :                                       
+[ 100]        :                                       	;Mensaje de bienvenida:
+[ 101]    0809: B4 09                                 	MOV ah,9H
+[ 102]    080B: BA 98 02                              	MOV DX,OFFSET bienvenida
+[ 103]    080E: CD 21                                 	INT 21H		;Int. de D.O.S.
+[ 104]        :                                       	
+[ 105]    0810: B4 00                                 	MOV AH,00h	;Parametro de pausa con enter
+[ 106]    0812: CD 16                                 	INT 16H		;Int. de control de teclado
+[ 107]        :                                       	
+[ 108]    0814: E8 4C FA                              	CALL CLEAR_SCREEN  ;Limpia pantalla	
+[ 109]        :                                       	
+[ 110]    0817: B4 09                                 	MOV ah,9H
+[ 111]    0819: BA 6A 05                              	MOV DX,OFFSET punto1a	;Lee la cadena hasta el '$'
+[ 112]    081C: CD 21                                 	INT 21H		
+[ 113]        :                                       	
+[ 114]    081E: BE F7 07                              	LEA SI,array	;pasa la direccion del array a SI.
+[ 115]    0821: B9 0A 00                              	MOV CX,10	;pone el contador del bucle en 10.
+[ 116]    0824: E8 0F 02                              	CALL guardarArray
+[ 117]        :                                       	
+[ 118]    0827: E8 18 FA                              	CALL PTHIS	;Imprime el los siguiente, con final. ,0
+[ 119]    082A: 0D 0A 2D 2D 2D 2D 2D 2D 2D 2D 2D 2D   		DB 13,10,'------------------------------------------',10,13,0
+                2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 
+                2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 
+                2D 2D 2D 2D 2D 2D 2D 2D 0A 0D 00    
+[ 120]        :                                       		
+[ 121]    0859: E8 07 FA                              	CALL CLEAR_SCREEN	
+[ 122]        :                                       		
+[ 123]    085C: BE F7 07                              	LEA SI,array
+[ 124]    085F: B9 09 00                              	MOV CX,9
+[ 125]    0862: E8 F9 01                              	CALL imprimirTabla
+[ 126]        :                                       	
+[ 127]        :                                       	
+[ 128]    0865: B4 09                                 	MOV AH,9H
+[ 129]    0867: BA 37 05                              	MOV DX,OFFSET enter
+[ 130]    086A: CD 21                                 	INT 21H
+[ 131]        :                                       	
+[ 132]    086C: B4 00                                 	MOV AH,00h	;Parametro de pausa con enter
+[ 133]    086E: CD 16                                 	INT 16H		;Int de control de teclado
+[ 134]    0870: E8 F0 F9                              	CALL CLEAR_SCREEN
+[ 135]    0873: E8 5F 02                              	CALL limpRegistros	;Limpia registros y banderas.
+[ 136]        :                                       	
+[ 137]        :                                       ;<<<<<<<<<<<<<<<( PUNTO B )>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+[ 138]        :                                       
+[ 139]    0876: B4 09                                 	MOV AH,9H
+[ 140]    0878: BA AA 05                              	MOV DX,OFFSET punto2a
+[ 141]    087B: CD 21                                 	INT 21H
+[ 142]        :                                       	
+[ 143]        :                                       	;Guarda los valores
+[ 144]        :                                       
+[ 145]    087D: E8 C2 F9                              	CALL PTHIS
+[ 146]    0880: 0D 0A 0A 49 6E 67 72 65 73 65 20 65   		DB 13,10,10,'Ingrese el PRIMER dividendo: ',0
+                6C 20 50 52 49 4D 45 52 20 64 69 76 
+                69 64 65 6E 64 6F 3A 20 00          
+[ 147]        :                                       		
+[ 148]    08A1: E8 5F F8                              	CALL SCAN_NUM	;Escanea numeros en el buffer termina con enter.
+[ 149]        :                                       			;Regrasa el numero en CX.
+[ 150]    08A4: 51                                    	PUSH CX		;Manda CX a la pila.
+[ 151]        :                                       
+[ 152]    08A5: E8 9A F9                              	CALL PTHIS
+[ 153]    08A8: 0D 0A 0A 49 6E 67 72 65 73 65 20 65   		DB 13,10,10,'Ingrese el SEGUNDO dividendo: ',0
+                6C 20 53 45 47 55 4E 44 4F 20 64 69 
+                76 69 64 65 6E 64 6F 3A 20 00       
+[ 154]        :                                       		
+[ 155]    08CA: E8 36 F8                              	CALL SCAN_NUM
+[ 156]        :                                       
+[ 157]    08CD: 51                                    	PUSH CX		;Regresa el valor del tope de la pila en CX.
+[ 158]        :                                       	
+[ 159]    08CE: E8 71 F9                              	CALL PTHIS
+[ 160]        :                                       		
+[ 161]    08D1: 0D 0A 0A 49 6E 67 72 65 73 65 20 65   		DB 13,10,10,'Ingrese el DIVISOR: ',0
+                6C 20 44 49 56 49 53 4F 52 3A 20 00 
+                                                    
+[ 162]    08E9: E8 17 F8                              	CALL SCAN_NUM
+[ 163]    08EC: 89 0E F9 07                           	MOV divisor,CX
+[ 164]        :                                       
+[ 165]    08F0: B4 09                                 	MOV AH,9H
+[ 166]    08F2: BA 37 05                              	MOV DX,OFFSET enter
+[ 167]    08F5: CD 21                                 	INT 21H
+[ 168]        :                                       	
+[ 169]    08F7: B4 00                                 	MOV AH,00h	
+[ 170]    08F9: CD 16                                 	INT 16H		
+[ 171]    08FB: E8 65 F9                              	CALL CLEAR_SCREEN
+[ 172]    08FE: E8 D4 01                              	CALL limpRegistros
+[ 173]        :                                       
+[ 174]        :                                       ;<<<<<<<<<<<<<<<( PUNTO C )>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>	
+[ 175]        :                                       	
+[ 176]    0901: B4 09                                 	MOV AH,9H
+[ 177]    0903: BA D7 05                              	MOV DX,OFFSET punto3a
+[ 178]    0906: CD 21                                 	INT 21H
+[ 179]        :                                       
+[ 180]    0908: 33 D2                                 	XOR DX,DX	;Importante limpiar en la div de WORD.	
+[ 181]        :                                       
+[ 182]    090A: 5B                                    	POP BX		;Esto saca de la pila el seg. dividendo.
+[ 183]    090B: 58                                    	POP AX		;Esto saca de la pila el primer dividendo.
+[ 184]        :                                       	
+[ 185]    090C: 53                                    	PUSH BX		;Meto el segundo dividendo en pila.
+[ 186]    090D: 50                                    	PUSH AX		;Meto el primer dividendo en pila.
+[ 187]        :                                       		
+[ 188]    090E: 8B 0E F9 07                           	MOV CX,divisor
+[ 189]        :                                       	
+[ 190]    0912: F7 F1                                 	DIV CX
+[ 191]    0914: A3 FB 07                              	MOV cociente1,AX
+[ 192]    0917: 89 16 FF 07                           	MOV resto1,DX
+[ 193]        :                                       	
+[ 194]    091B: 33 D2                                 	XOR DX,DX
+[ 195]        :                                       
+[ 196]    091D: 8B C3                                 	MOV AX,BX
+[ 197]    091F: F7 F1                                 	DIV CX
+[ 198]    0921: A3 FD 07                              	MOV cociente2,AX
+[ 199]    0924: 89 16 01 08                           	MOV resto2,DX	
+[ 200]        :                                       	
+[ 201]        :                                       	;Imprimir la tabla:
+[ 202]    0928: 58                                    	POP AX
+[ 203]    0929: 5B                                    	POP BX
+[ 204]        :                                       	
+[ 205]    092A: E8 B5 01                              	CALL tablac
+[ 206]        :                                       	
+[ 207]    092D: B4 00                                 	MOV AH,00h	
+[ 208]    092F: CD 16                                 	INT 16H		
+[ 209]    0931: E8 2F F9                              	CALL CLEAR_SCREEN
+[ 210]    0934: E8 9E 01                              	CALL limpRegistros
+[ 211]        :                                       	
+[ 212]        :                                       ;<<<<<<<<<<<<<<<( PUNTO F )>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+[ 213]        :                                       
+[ 214]        :                                       ;INTERPRETACION DEL ENUNCIADO:
+[ 215]        :                                       ;Si el cociente es mayor al divisor, no da el complemento 2, da un absurdo.
+[ 216]        :                                       ;Dado que no se nos explico como restar complemento 2 con un sustraendo mayor al minuendo.
+[ 217]        :                                       ;Asi que si el cociente es mayor al divisor, se saltea el punto F) en el numero que corresponde:
+[ 218]        :                                       
+[ 219]    0937: B4 09                                 	MOV AH,9H
+[ 220]    0939: BA 60 06                              	MOV DX,OFFSET punto6a
+[ 221]    093C: CD 21                                 	INT 21H
+[ 222]        :                                       	
+[ 223]    093E: B4 09                                 	MOV AH,9H
+[ 224]    0940: BA 37 05                              	MOV DX,OFFSET enter
+[ 225]    0943: CD 21                                 	INT 21H
+[ 226]        :                                       	
+[ 227]    0945: B4 00                                 	MOV AH,00h	
+[ 228]    0947: CD 16                                 	INT 16H		
+[ 229]    0949: E8 17 F9                              	CALL CLEAR_SCREEN
+[ 230]    094C: E8 86 01                              	CALL limpRegistros
+[ 231]        :                                       
+[ 232]    094F: A1 FF 07                              	MOV AX,resto1	
+[ 233]    0952: 8B 1E 01 08                           	MOV BX,resto2
+[ 234]    0956: 8B 0E F9 07                           	MOV CX,divisor
+[ 235]        :                                       	
+[ 236]        :                                       
+[ 237]    095A: 3D 00 00                              	CMP AX,0		;Compara cociente1 con 0.
+[ 238]    095D: 75 0E                                 JNZ IGUAL1			;Si cociente no es igual a 0, salta
+[ 239]    095F: A1 FB 07                              	MOV AX,cociente1
+[ 240]    0962: 3B C8                                 	CMP CX,AX		;compara divisor-cociente1.
+[ 241]    0964: 78 07                                 JS IGUAL1			;Si flag S (es negativo) no realiza el complemento2.Explicacion linea 214.
+[ 242]        :                                       		
+[ 243]    0966: F7 D8                                 	NEG AX			;Invierte y suma 1, complemento 2.
+[ 244]    0968: 03 C1                                 	ADD AX,CX		;Suma el divisor+el cociente1.
+[ 245]    096A: A3 FB 07                              	MOV cociente1,AX	;Remplaza el resultado.
+[ 246]    096D:                                       IGUAL1:
+[ 247]        :                                       	
+[ 248]    096D: 83 FB 00                              	CMP BX,0
+[ 249]    0970: 75 10                                 JNZ IGUAL2
+[ 250]    0972: 8B 1E FD 07                           	MOV BX,cociente2
+[ 251]    0976: 3B CB                                 	CMP CX,BX		;compara divisor-cociente2.
+[ 252]    0978: 78 08                                 JS IGUAL2			;Si flag S (es negativo) no realiza el complemento2.Explicacion linea 214.
+[ 253]        :                                       	
+[ 254]    097A: F7 DB                                 	NEG BX			;Invierte y suma 1, complemento 2.
+[ 255]    097C: 03 D9                                 	ADD BX,CX		;Suma el divisor+el cociente1.
+[ 256]    097E: 89 1E FD 07                           	MOV cociente2,BX	;Remplaza el resultado.
+[ 257]    0982:                                       IGUAL2:	
+[ 258]        :                                       	
+[ 259]    0982: E8 50 01                              	CALL limpRegistros
+[ 260]        :                                       
+[ 261]        :                                       ;<<<<<<<<<<<<<<<( PUNTO D )>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+[ 262]        :                                       	
+[ 263]        :                                       
+[ 264]    0985: B4 09                                 	MOV AH,9H
+[ 265]    0987: BA FE 05                              	MOV DX,OFFSET punto4a
+[ 266]    098A: CD 21                                 	INT 21H
+[ 267]        :                                       	
+[ 268]    098C: A1 FB 07                              	MOV AX,cociente1
+[ 269]    098F: 8B 1E FD 07                           	MOV BX,cociente2
+[ 270]    0993: F7 E3                                 	MUL BX
+[ 271]    0995: A3 03 08                              	MOV resu1,AX
+[ 272]        :                                       	
+[ 273]    0998: A1 FF 07                              	MOV AX,resto1
+[ 274]    099B: 8B 1E 01 08                           	MOV BX,resto2
+[ 275]    099F: F7 E3                                 	MUL BX
+[ 276]    09A1: A3 05 08                              	MOV resu2,AX
+[ 277]        :                                       	
+[ 278]        :                                       	;Imprimir tablas
+[ 279]    09A4: E8 A9 01                              	CALL tablad
+[ 280]        :                                       	
+[ 281]    09A7: B4 00                                 	MOV AH,00h	
+[ 282]    09A9: CD 16                                 	INT 16H		
+[ 283]    09AB: E8 B5 F8                              	CALL CLEAR_SCREEN
+[ 284]    09AE: E8 24 01                              	CALL limpRegistros
+[ 285]        :                                       	
+[ 286]        :                                       ;<<<<<<<<<<<<<<<( PUNTO E )>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+[ 287]        :                                       
+[ 288]    09B1: B9 09 00                              	MOV CX,9
+[ 289]    09B4: BE F7 07                              	LEA SI,array
+[ 290]        :                                       	
+[ 291]    09B7: E8 A4 00                              CALL imprimirTabla
+[ 292]        :                                       
+[ 293]    09BA: E8 39 02                              	CALL tablae
+[ 294]        :                                       	
+[ 295]    09BD: E8 15 01                              	CALL limpRegistros
+[ 296]        :                                       	
+[ 297]        :                                       	;Comparacion con la tabla y resultado final:
+[ 298]        :                                       				
+[ 299]    09C0: A1 07 08                              	MOV AX,resufinal	;Divide resufinal por 10, el resto es la unidad.
+[ 300]    09C3: BB 0A 00                              	MOV BX,10
+[ 301]    09C6: F7 F3                                 	DIV BX
+[ 302]    09C8: 89 16 07 08                           	MOV resufinal,DX	;Resto guardado en DX.
+[ 303]        :                                       	
+[ 304]    09CC: BE F7 07                              	LEA SI,array		;Direccion del array en SI.
+[ 305]    09CF: 03 36 07 08                           	ADD SI,resufinal	
+[ 306]    09D3: 03 36 07 08                           	ADD SI,resufinal	;Necesario para el indice en WORD.
+[ 307]        :                                       
+[ 308]    09D7: 8B 0C                                 	MOV CX,[SI]
+[ 309]        :                                       
+[ 310]    09D9: B2 1E                                 	MOV DL,30		;Parametros de salto en la pantalla.
+[ 311]    09DB: B6 0F                                 	MOV DH,15
+[ 312]    09DD: 33 DB                                 	XOR BX,BX		;Parametro en 0.
+[ 313]    09DF: B4 02                                 	MOV AH,2	
+[ 314]    09E1: CD 10                                 	INT 10H			;Salto en la posicion fila=15,colum=30
+[ 315]        :                                       	
+[ 316]    09E3: 8B C1                                 	MOV AX,CX			
+[ 317]        :                                       	
+[ 318]    09E5: E8 E0 F7                              	CALL PRINT_NUM
+[ 319]        :                                       	
+[ 320]    09E8: B4 00                                 	MOV AH,00h	
+[ 321]    09EA: CD 16                                 	INT 16H		
+[ 322]    09EC: E8 74 F8                              	CALL CLEAR_SCREEN
+[ 323]        :                                       
+[ 324]    09EF: E8 50 F8                              	CALL PTHIS
+[ 325]    09F2: 0D 0A 0A 0A 0A 0A 0A 0A 0A 0A 0A 0A   		DB 13,10,10,10,10,10,10,10,10,10,10,10,'                  Apaga el ordenador y vete a la cama!',0
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 41 70 61 67 61 20 
+                65 6C 20 6F 72 64 65 6E 61 64 6F 72 
+                20 79 20 76 65 74 65 20 61 20 6C 61 
+                20 63 61 6D 61 21 00                
+[ 326]        :                                       	
+[ 327]        :                                       ;LA PILA TIENE QUE ESTAR SIN VALORES PARA PODER TERMINAR EL PROGRAMA.	
+[ 328]    0A35: C3                                    RET
+[ 329]        :                                       main ENDP
+[ 330]        :                                       ;--------------------------------------------------------------------
+[ 331]        :                                       ;FUNCIONES:
+[ 332]        :                                       ;--------------------------------------------------------------------
+[ 333]    0A36:                                       guardarArray PROC
+[ 334]        :                                       	;FUNCION:Ingresa el Array
+[ 335]        :                                       	;PARAMETROS: la direccion del array en SI. Contador del array en CX.
+[ 336]        :                                       				
+[ 337]    0A36:                                       	ARRAY_IN:
+[ 338]        :                                       	
+[ 339]    0A36: E8 09 F8                              		CALL PTHIS	;Imprime las lineas siguentes.
+[ 340]    0A39: 0D 0A 4E 75 6D 65 72 6F 20 00         		    DB 13,10,'Numero ',0
+[ 341]        :                                       		
+[ 342]    0A43: B0 3A                                 		MOV AL,58	;Agrega 58 base para trasformar en ASCII
+[ 343]    0A45: 2A C1                                 		SUB AL,CL	;Resta el contador para formar el numero ASCII.
+[ 344]    0A47: B4 0E                                 		MOV AH,0EH	;parametro de caracter
+[ 345]    0A49: CD 10                                 		INT 10H		;imprime caracter de AL.
+[ 346]        :                                       		
+[ 347]    0A4B: E8 F4 F7                              		CALL PTHIS	
+[ 348]    0A4E: 3A 20 00                              		    DB ': ',0	
+[ 349]        :                                       	
+[ 350]    0A51: 51                                    		PUSH CX		;guarda CX en la pila, ya que lo usa la funcion scan_num
+[ 351]    0A52: E8 AE F6                              		CALL SCAN_NUM	;scan_num toma el dato con eco por pantalla de mas de un caracter y lo guarda en CX.
+[ 352]    0A55: 89 0C                                 		MOV [SI],CX	;guarda el dato en la direccion de memoria pasada en SI.
+[ 353]    0A57: 83 C6 02                              		ADD SI,2	;suma la posision de memoria, como el indice del array,OJO se suma 2 por que salta en DB.
+[ 354]    0A5A: 59                                    		POP CX		;saca de la pila guarda en CX el contador del for.
+[ 355]        :                                       		
+[ 356]    0A5B: E2 D9                                 	LOOP ARRAY_IN		;Salto del FOR, usa CX y lo decrementa en 1 cada salto.
+[ 357]    0A5D: C3                                    RET
+[ 358]        :                                       guardarArray ENDP
+[ 359]        :                                       ;--------------------------------------------------------------------
+[ 360]    0A5E:                                       imprimirTabla PROC
+[ 361]        :                                       	;FUNCION:Imprime el Array en una tabla con sus posiciones.
+[ 362]        :                                       	;PARAMETROS: la direccion del array en SI. Contador del array en CX.
+[ 363]        :                                       	
+[ 364]    0A5E: E8 E1 F7                              		CALL PTHIS
+[ 365]    0A61: 20 00                                 			DB ' ',0
+[ 366]        :                                       		
+[ 367]    0A63: 8B 04                                 		MOV AX,[SI]	;Mueve el dato de la posicion de registro a AX. AX es DB.
+[ 368]    0A65: E8 60 F7                              		CALL PRINT_NUM	;Imprime el dato como DECimal pasado en AX.
+[ 369]        :                                       
+[ 370]        :                                       		
+[ 371]    0A68:                                       	IMP_ARRAY:
+[ 372]        :                                       	
+[ 373]    0A68: 51                                    		PUSH CX
+[ 374]        :                                       		
+[ 375]        :                                       		
+[ 376]    0A69: 80 C2 08                              		ADD DL,8	;Salto cada +8 de columna columna.
+[ 377]    0A6C: B6 00                                 		MOV DH,0	;Salto fila
+[ 378]    0A6E: B4 02                                 		MOV Ah,2	;parametro.
+[ 379]    0A70: CD 10                                 		INT 10h		;Instruccion para saltar de posicion en pantalla.		
+[ 380]    0A72: E8 CD F7                              		CALL PTHIS
+[ 381]    0A75: 7C 20 00                              			DB '| ',0
+[ 382]        :                                       		
+[ 383]    0A78: 83 C6 02                              		ADD SI,2	;Incrementa en 2 por que es un doble word.
+[ 384]    0A7B: 8B 04                                 		MOV AX,[SI]	;Mueve el dato de la posicion de registro a AX. AX es DB.
+[ 385]    0A7D: E8 48 F7                              		CALL PRINT_NUM	;Imprime el dato como DECimal pasado en AX.
+[ 386]        :                                       
+[ 387]        :                                       					
+[ 388]    0A80: 52                                    		PUSH DX
+[ 389]        :                                       		
+[ 390]    0A81: 80 EA 08                              		SUB DL,8
+[ 391]    0A84: B6 01                                 		MOV DH,1
+[ 392]    0A86: B4 02                                 		MOV AH,2	
+[ 393]    0A88: CD 10                                 		INT 10H
+[ 394]    0A8A: E8 B5 F7                              		CALL PTHIS
+[ 395]    0A8D: 20 2D 2D 2D 2D 2D 2D 2D 00            			DB ' -------',0
+[ 396]        :                                       		
+[ 397]    0A96: 50                                    		PUSH AX
+[ 398]        :                                       		
+[ 399]    0A97: 80 C2 04                              		ADD DL,4
+[ 400]    0A9A: B6 02                                 		MOV DH,2
+[ 401]    0A9C: CD 10                                 		INT 10H	
+[ 402]    0A9E: B0 39                                 		MOV AL,57	;Agrega 57 para trasformar en ASCII
+[ 403]    0AA0: 2A C1                                 		SUB AL,CL	;Resta el contador
+[ 404]    0AA2: B4 0E                                 		MOV AH,0EH	
+[ 405]    0AA4: CD 10                                 		INT 10H						
+[ 406]    0AA6: E8 99 F7                              		CALL PTHIS
+[ 407]    0AA9: 20 20 20 7C 00                        			DB '   |',0
+[ 408]        :                                       		
+[ 409]    0AAE: 58                                    		POP AX
+[ 410]    0AAF: 5A                                    		POP DX
+[ 411]    0AB0: 59                                    		POP CX
+[ 412]    0AB1: E2 B5                                 	LOOP	IMP_ARRAY	;Salto de FOR.
+[ 413]        :                                       
+[ 414]        :                                       		
+[ 415]    0AB3: B6 01                                 		MOV DH,1
+[ 416]    0AB5: B4 02                                 		MOV AH,2	
+[ 417]    0AB7: CD 10                                 		INT 10H
+[ 418]    0AB9: E8 86 F7                              		CALL PTHIS
+[ 419]    0ABC: 20 2D 2D 2D 2D 2D 2D 7C 00            			DB ' ------|',0
+[ 420]        :                                       
+[ 421]    0AC5: 80 C2 04                              		ADD DL,4
+[ 422]    0AC8: B6 02                                 		MOV DH,2
+[ 423]    0ACA: CD 10                                 		INT 10H	
+[ 424]    0ACC: B0 39                                 		MOV AL,57	
+[ 425]    0ACE: 2A C1                                 		SUB AL,CL	
+[ 426]    0AD0: B4 0E                                 		MOV AH,0EH	
+[ 427]    0AD2: CD 10                                 		INT 10H						
+[ 428]    0AD4: C3                                    RET
+[ 429]        :                                       imprimirTabla ENDP
+[ 430]        :                                       ;--------------------------------------------------------------------
+[ 431]    0AD5:                                       limpRegistros PROC
+[ 432]        :                                       	;Metodo rapido para limpiar reg. grales. y banderas.
+[ 433]        :                                       				
+[ 434]    0AD5: 33 C0                                 		XOR AX,AX	;Setea los reg X en 0.
+[ 435]    0AD7: 33 DB                                 		XOR BX,BX		
+[ 436]    0AD9: 33 C9                                 		XOR CX,CX
+[ 437]    0ADB: 33 D2                                 		XOR DX,DX
+[ 438]        :                                       		
+[ 439]    0ADD: 50                                    		PUSH AX		;Manda 0 a la pila.
+[ 440]    0ADE: 9D                                    		POPF		;Saca 0 de la pila y lo remplaza en todas las banderas.
+[ 441]        :                                       		
+[ 442]    0ADF: 33 F6                                 		XOR SI,SI	;Pone en 0 el direccionador.		
+[ 443]    0AE1: C3                                    RET
+[ 444]        :                                       limpRegistros ENDP
+[ 445]        :                                       ;--------------------------------------------------------------------
+[ 446]    0AE2:                                       tablac PROC
+[ 447]        :                                       	;FUNCION:Imprime la tabla pedida en el punto C.
+[ 448]        :                                       	;PARAMETROS:	AX=dividendo 1.
+[ 449]        :                                       	;		BX=dividendo 2.
+[ 450]        :                                       	;		var. divisor
+[ 451]        :                                       	;		var. cociente1 y cociente2
+[ 452]        :                                       	;		var. resto1 y resto2
+[ 453]        :                                       			
+[ 454]    0AE2: 53                                    		PUSH BX
+[ 455]    0AE3: 50                                    		PUSH AX
+[ 456]        :                                       		
+[ 457]    0AE4: B4 09                                 		MOV AH,9H
+[ 458]    0AE6: BA 9F 07                              		MOV DX,OFFSET tabla_c
+[ 459]    0AE9: CD 21                                 		INT 21H
+[ 460]        :                                       		
+[ 461]    0AEB: 58                                    		POP AX		;Saca de la pila el primer div.
+[ 462]        :                                       		
+[ 463]    0AEC: E8 D9 F6                              		CALL PRINT_NUM
+[ 464]        :                                       		
+[ 465]    0AEF: B2 0F                                 		MOV DL,15
+[ 466]    0AF1: B6 05                                 		MOV DH,5
+[ 467]    0AF3: B4 02                                 		MOV AH,2	
+[ 468]    0AF5: CD 10                                 		INT 10H
+[ 469]        :                                       		
+[ 470]    0AF7: A1 F9 07                              		MOV AX,divisor
+[ 471]    0AFA: E8 CB F6                              		CALL PRINT_NUM
+[ 472]        :                                       		
+[ 473]    0AFD: B2 18                                 		MOV DL,24
+[ 474]    0AFF: B6 05                                 		MOV DH,5
+[ 475]    0B01: B4 02                                 		MOV AH,2	
+[ 476]    0B03: CD 10                                 		INT 10H
+[ 477]        :                                       			
+[ 478]    0B05: A1 FB 07                              		MOV AX,cociente1
+[ 479]    0B08: E8 BD F6                              		CALL PRINT_NUM
+[ 480]        :                                       		
+[ 481]    0B0B: B2 23                                 		MOV DL,35
+[ 482]    0B0D: B6 05                                 		MOV DH,5
+[ 483]    0B0F: B4 02                                 		MOV AH,2	
+[ 484]    0B11: CD 10                                 		INT 10H
+[ 485]        :                                       		
+[ 486]    0B13: A1 FF 07                              		MOV AX,resto1
+[ 487]    0B16: E8 AF F6                              		CALL PRINT_NUM
+[ 488]        :                                       		
+[ 489]        :                                       		;primera linea fin
+[ 490]        :                                       		
+[ 491]    0B19: E8 26 F7                              		CALL PTHIS
+[ 492]    0B1C: 0D 0A 0A 20 00                        			DB 13,10,10,' ',0
+[ 493]        :                                       			
+[ 494]    0B21: 58                                    		POP AX
+[ 495]        :                                       		
+[ 496]    0B22: E8 A3 F6                              		CALL PRINT_NUM
+[ 497]        :                                       		
+[ 498]    0B25: B2 0F                                 		MOV DL,15
+[ 499]    0B27: B6 07                                 		MOV DH,7
+[ 500]    0B29: B4 02                                 		MOV AH,2	
+[ 501]    0B2B: CD 10                                 		INT 10H
+[ 502]        :                                       		
+[ 503]    0B2D: A1 F9 07                              		MOV AX,divisor
+[ 504]    0B30: E8 95 F6                              		CALL PRINT_NUM
+[ 505]        :                                       		
+[ 506]    0B33: B2 18                                 		MOV DL,24
+[ 507]    0B35: B6 07                                 		MOV DH,7
+[ 508]    0B37: B4 02                                 		MOV AH,2	
+[ 509]    0B39: CD 10                                 		INT 10H
+[ 510]        :                                       					
+[ 511]    0B3B: A1 FD 07                              		MOV AX,cociente2
+[ 512]    0B3E: E8 87 F6                              		CALL PRINT_NUM
+[ 513]        :                                       		
+[ 514]    0B41: B2 23                                 		MOV DL,35
+[ 515]    0B43: B6 07                                 		MOV DH,7
+[ 516]    0B45: B4 02                                 		MOV AH,2	
+[ 517]    0B47: CD 10                                 		INT 10H
+[ 518]        :                                       		
+[ 519]    0B49: A1 01 08                              		MOV AX,resto2
+[ 520]    0B4C: E8 79 F6                              		CALL PRINT_NUM
+[ 521]    0B4F: C3                                    RET
+[ 522]        :                                       tablac ENDP
+[ 523]        :                                       ;--------------------------------------------------------------------
+[ 524]    0B50:                                       tablad PROC
+[ 525]        :                                       	;FUNCION:Imprime la tabla pedida en el punto D.
+[ 526]        :                                       	;PARAMETROS:	VAR cociente1 Y 2
+[ 527]        :                                       	;		VAR resto1 y 2
+[ 528]        :                                       	
+[ 529]    0B50: E8 EF F6                              		CALL PTHIS
+[ 530]    0B53: 0D 0A 0A 20 4D 75 6C 74 69 70 6C 69   			DB 13,10,10,' Multiplicacion de COCIENTES: ',13,10,10,0
+                63 61 63 69 6F 6E 20 64 65 20 43 4F 
+                43 49 45 4E 54 45 53 3A 20 0D 0A 0A 
+                00                                  
+[ 531]        :                                       			
+[ 532]    0B78: E8 C7 F6                              		CALL PTHIS
+[ 533]    0B7B: 20 20 20 20 20 20 20 20 00            			DB '        ',0
+[ 534]        :                                       			
+[ 535]    0B84: A1 FB 07                              		MOV AX,cociente1
+[ 536]        :                                       
+[ 537]    0B87: E8 3E F6                              		CALL PRINT_NUM
+[ 538]        :                                       		
+[ 539]    0B8A: E8 B5 F6                              		CALL PTHIS
+[ 540]    0B8D: 20 2A 20 00                           			DB ' * ',0
+[ 541]        :                                       		
+[ 542]    0B91: A1 FD 07                              		MOV AX,cociente2
+[ 543]    0B94: E8 31 F6                              		CALL PRINT_NUM
+[ 544]        :                                       		
+[ 545]    0B97: E8 A8 F6                              		CALL PTHIS
+[ 546]    0B9A: 20 3D 20 00                           			DB ' = ',0
+[ 547]        :                                       		
+[ 548]    0B9E: A1 03 08                              		MOV AX,resu1
+[ 549]    0BA1: E8 24 F6                              		CALL PRINT_NUM
+[ 550]        :                                       		
+[ 551]        :                                       		;Imprimir los restos
+[ 552]        :                                       		
+[ 553]    0BA4: E8 9B F6                              		CALL PTHIS
+[ 554]    0BA7: 0D 0A 0A 20 4D 75 6C 74 69 70 6C 69   			DB 13,10,10,' Multiplicacion de RESTOS: ',13,10,10,0
+                63 61 63 69 6F 6E 20 64 65 20 52 45 
+                53 54 4F 53 3A 20 0D 0A 0A 00       
+[ 555]        :                                       			
+[ 556]    0BC9: E8 76 F6                              		CALL PTHIS
+[ 557]    0BCC: 20 20 20 20 20 20 20 20 00            			DB '        ',0
+[ 558]        :                                       			
+[ 559]    0BD5: A1 FF 07                              		MOV AX,resto1
+[ 560]        :                                       		
+[ 561]    0BD8: E8 ED F5                              		CALL PRINT_NUM
+[ 562]        :                                       		
+[ 563]    0BDB: E8 64 F6                              		CALL PTHIS
+[ 564]    0BDE: 20 2A 20 00                           			DB ' * ',0
+[ 565]        :                                       		
+[ 566]    0BE2: A1 01 08                              		MOV AX,resto2
+[ 567]    0BE5: E8 E0 F5                              		CALL PRINT_NUM
+[ 568]        :                                       		
+[ 569]    0BE8: E8 57 F6                              		CALL PTHIS
+[ 570]    0BEB: 20 3D 20 00                           			DB ' = ',0
+[ 571]        :                                       		
+[ 572]    0BEF: A1 05 08                              		MOV AX,resu2
+[ 573]    0BF2: E8 D3 F5                              		CALL PRINT_NUM
+[ 574]    0BF5: C3                                    RET
+[ 575]        :                                       tablad ENDP
+[ 576]        :                                       ;--------------------------------------------------------------------
+[ 577]    0BF6:                                       tablae PROC
+[ 578]        :                                       	;FUNCION:Suma los resultados e imprime la tabla del punto E.
+[ 579]        :                                       	;PARAMETROS:	VAR resu1 Y 2
+[ 580]        :                                       	;		VAR resufinal
+[ 581]        :                                       	
+[ 582]    0BF6: E8 49 F6                              		CALL PTHIS
+[ 583]    0BF9: 0D 0A 0A 00                           			DB 13,10,10,0
+[ 584]        :                                       		
+[ 585]    0BFD: B4 09                                 		MOV AH,9H
+[ 586]    0BFF: BA 2C 06                              		MOV DX,OFFSET punto5a
+[ 587]    0C02: CD 21                                 		INT 21H
+[ 588]        :                                       		
+[ 589]    0C04: E8 3B F6                              		CALL PTHIS
+[ 590]    0C07: 0D 0A 0A 00                           			DB 13,10,10,0
+[ 591]        :                                       				
+[ 592]    0C0B: B2 0A                                 		MOV DL,10
+[ 593]    0C0D: B6 07                                 		MOV DH,7
+[ 594]    0C0F: B4 02                                 		MOV AH,2	
+[ 595]    0C11: CD 10                                 		INT 10H
+[ 596]        :                                       		
+[ 597]    0C13: E8 2C F6                              		CALL PTHIS
+[ 598]    0C16: 53 75 6D 61 20 64 65 20 6C 6F 73 20   			DB 'Suma de los resultados:',10,0
+                72 65 73 75 6C 74 61 64 6F 73 3A 0A 
+                00                                  
+[ 599]        :                                       			
+[ 600]    0C2F: B2 11                                 		MOV DL,17
+[ 601]    0C31: B6 09                                 		MOV DH,9
+[ 602]    0C33: B4 02                                 		MOV AH,2	
+[ 603]    0C35: CD 10                                 		INT 10H
+[ 604]        :                                       			
+[ 605]    0C37: A1 03 08                              		MOV AX,resu1
+[ 606]    0C3A: E8 8B F5                              		CALL PRINT_NUM
+[ 607]        :                                       		
+[ 608]    0C3D: B2 0F                                 		MOV DL,15
+[ 609]    0C3F: B6 0A                                 		MOV DH,10
+[ 610]    0C41: B4 02                                 		MOV AH,2	
+[ 611]    0C43: CD 10                                 		INT 10H
+[ 612]        :                                       		
+[ 613]    0C45: E8 FA F5                              		CALL PTHIS
+[ 614]    0C48: 2B 00                                 			DB '+',0
+[ 615]        :                                       		
+[ 616]    0C4A: B2 11                                 		MOV DL,17
+[ 617]    0C4C: B6 0A                                 		MOV DH,10
+[ 618]    0C4E: B4 02                                 		MOV AH,2	
+[ 619]    0C50: CD 10                                 		INT 10H
+[ 620]        :                                       		
+[ 621]    0C52: A1 05 08                              		MOV AX,resu2
+[ 622]    0C55: E8 70 F5                              		CALL PRINT_NUM
+[ 623]        :                                       		
+[ 624]    0C58: B2 0E                                 		MOV DL,14
+[ 625]    0C5A: B6 0B                                 		MOV DH,11
+[ 626]    0C5C: B4 02                                 		MOV AH,2	
+[ 627]    0C5E: CD 10                                 		INT 10H
+[ 628]        :                                       		
+[ 629]    0C60: E8 DF F5                              		CALL PTHIS
+[ 630]    0C63: 2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 00      			DB '----------',0
+[ 631]        :                                       			
+[ 632]    0C6E: B2 11                                 		MOV DL,17
+[ 633]    0C70: B6 0C                                 		MOV DH,12
+[ 634]    0C72: B4 02                                 		MOV AH,2	
+[ 635]    0C74: CD 10                                 		INT 10H
+[ 636]        :                                       		
+[ 637]    0C76: A1 03 08                              		MOV AX,resu1
+[ 638]    0C79: 8B 1E 05 08                           		MOV BX,resu2
+[ 639]    0C7D: 03 C3                                 		ADD AX,BX
+[ 640]        :                                       		
+[ 641]    0C7F: A3 07 08                              		MOV resufinal,AX
+[ 642]        :                                       		
+[ 643]    0C82: E8 43 F5                              		CALL PRINT_NUM
+[ 644]        :                                       		
+[ 645]    0C85: B2 01                                 		MOV DL,1
+[ 646]    0C87: B6 0F                                 		MOV DH,15
+[ 647]    0C89: 33 DB                                 		XOR BX,BX
+[ 648]    0C8B: B4 02                                 		MOV AH,2	
+[ 649]    0C8D: CD 10                                 		INT 10H
+[ 650]        :                                       		
+[ 651]    0C8F: E8 B0 F5                              		CALL PTHIS
+[ 652]    0C92: 45 4C 20 56 41 4C 4F 52 20 51 55 45   			DB 'EL VALOR QUE CORRESPONDE ES: ',13,0
+                20 43 4F 52 52 45 53 50 4F 4E 44 45 
+                20 45 53 3A 20 0D 00                
+[ 653]    0CB1: C3                                    RET
+[ 654]        :                                       tablae ENDP
+[ 655]        :                                       ;--------------------------------------------------------------------
+[ 656]        :                                       
+[ 657]        :                                       ;--------------------------------------------------------------------
+[ 658]        :                                       
+[ 659]        :                                       ;--------------------------------------------------------------------
+[ 660]        :                                       
+[ 661]        :                                       END main
+[ 662]        :                                       
+ 
+===================================================================================================
+ 
+
+
+
+
+===================================================================================================

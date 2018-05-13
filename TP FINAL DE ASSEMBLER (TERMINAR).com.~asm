@@ -1,0 +1,230 @@
+; memoria
+
+org 100h
+
+;biblioteca
+include "emu8086.inc"
+
+;variable constante
+arraytamaño equ 10
+
+;el vector
+array dw arraytamaño
+
+;ingresos
+;mensajes del vector
+ingreseNum db "ingrese un numero: $"
+
+;mensaje de los ingresos de los numeros
+primerDividendo db "ingrese el primer numero (dividendo): $"
+segundoDividendo db "ingrese el segundo numero (dividendo): $"
+divisorDeNumeros db "ingrese el divisor de los numeros: $"
+resDivisionA db "resto es: $"
+resDivisionB db "resto es: $"
+cosDivisionA db "cociente es: $"
+cosDivisionB db "cociente es: $"
+resMultiplicacionRestos db "el resultado de la multiplicacion de los restos es: $"
+resMultiplicacionCocientes db "el resultado de la multiplicacion de los cocientes es: $"
+sumaDeProductos db "la suma de los productos es: $"
+ultimoValor db "el valor a que corresponde el ultimo digito de la suma es: $"
+
+;ingreso de numeros
+dividendo1 dw ?
+dividendo2 dw ?
+divisor dw ?
+resto1 dw ?
+resto2 dw ?
+cociente1 dw ?
+cociente2 dw ?
+multiplicacionRestos dw ?
+multiplicacionCocientes dw ?
+sumaDeAmbosProductos dw ?
+unidad dw ?
+
+;comienzo del programa cargando datos
+mov bx, 0
+mov cx, arraytamaño
+
+cargaDelVector:
+push cx
+mov ah, 09h
+lea dx, ingreseNum
+int 21h
+call scan_num
+mov array[bx], cx
+add bx, 1
+call saltoDeLinea
+pop cx
+
+loop cargaDelVector
+
+
+mov cx,arraytamaño
+
+
+;ingerso de los numeros para operar
+mov ah, 09h
+lea dx, primerDividendo
+call scan_num
+call SaltoDeLinea
+mov dividendo1, cx
+int 21h
+
+mov ah, 09h
+lea dx, segundoDividendo
+call scan_num
+call saltoDeLinea
+mov dividendo2, cx
+int 21h
+
+mov ah, 09h
+lea dx, divisorDeNumeros
+call scan_num
+call saltoDeLinea
+mov divisor, cx
+int 21h
+
+;primer division
+xor ax, ax
+xor bx, bx
+xor dx, dx
+
+mov ax, dividendo1
+mov bx, divisor
+div bx
+
+mov ah, 09h
+lea dx, cosDivisionA
+mov cociente1, ax
+call print_num
+call saltoDeLinea
+int 21h
+
+mov ah, 09h
+lea dx, resDivisionA
+mov resto1, dx
+call print_num
+call saltoDeLinea
+int 21h
+
+cmp dx, 0
+jz complementoA2
+proc
+complementoA2:
+mov ax, divisor
+neg ax
+mov bx, cociente1
+neg bx
+sub ax, bx
+endp
+
+;segunda divison
+xor ax, ax
+xor bx, bx
+xor dx, dx
+
+mov ax, dividendo2
+mov bx, divisor
+div bx
+
+mov ah, 09h
+lea dx, cosDivisionB
+mov cociente2, ax
+call print_num
+call saltoDeLinea
+int 21h
+
+mov ah, 09h
+lea dx,resDivisionB
+mov resto2, dx
+call print_num
+call saltoDeLinea
+int 21h
+
+cmp dx, 0
+jz CompA2
+
+CompA2 proc
+mov ax, divisor
+neg ax
+mov bx, cociente2
+neg bx
+sub ax, bx
+endp
+
+;proceso de multiplicacion
+mov ax, cociente1
+mov bx, cociente2
+mul bx
+mov ah, 09h
+lea dx, resMultiplicacionCocientes
+mov multiplicacionCocientes, ax
+call print_num
+call saltoDeLinea
+int 21h
+
+
+mov ax, resto1
+mov bx, resto2
+mul bx
+mov ah, 09h
+lea dx, resMultiplicacionRestos
+mov multiplicacionRestos, ax
+call print_num
+call saltoDeLinea
+int 21h
+
+;suma de los productos
+mov ax, multiplicacionCocientes
+add ax, multiplicacionRestos
+mov ah, 09h
+lea dx, sumaDeProductos
+mov sumaDeAmbosProductos, ax
+call print_num
+call saltoDeLinea
+int 21h
+
+mov bx, 10
+div bx
+mov unidad, dx
+call print_num
+
+;valor final
+mov ah, 09h
+lea dx, ultimoValor
+mov bx, unidad
+mov ax, array[bx]
+call print_num
+call saltoDeLinea
+int 21h
+
+jmp final
+final:
+int 20h
+
+
+ret
+
+
+DEFINE_SCAN_NUM
+DEFINE_PRINT_NUM
+DEFINE_PRINT_NUM_UNS
+
+
+;Imprime un salto de línea.
+saltoDeLinea proc
+push ax
+push dx
+mov ah, 02h
+mov dl, 0Dh
+int 21h
+mov dl, 0Ah
+int 21h
+pop dx
+pop ax
+ret
+endp
+
+
+
+; [SOURCE]: C:\Users\Usuario\Desktop\TP ASSEMBLER CELANT AGUSTIN\TP FINAL DE ASSEMBLER (TERMINAR).asm
